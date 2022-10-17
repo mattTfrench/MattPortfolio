@@ -1,0 +1,73 @@
+QUERY 1
+--  Make sure my data uploaded properly
+SELECT *
+FROM COVID RIGHT JOIN Monkeypox ON COVID.locdate =[Monkeypox].[locdate]
+WHERE COVID.continent is not null
+ORDER BY 3, 4;
+
+QUERY 2
+-- Select specific data after a join
+SELECT COVID.location, Monkeypox.date, Monkeypox.total_cases, Monkeypox.new_cases, Monkeypox.total_deaths, COVID.population
+FROM COVID RIGHT JOIN Monkeypox ON COVID.locdate =[Monkeypox].[locdate]
+WHERE COVID.continent is not null
+ORDER BY 1, 2;
+
+QUERY 3
+-- Total Cases vs Total Deaths
+-- Compare likelihood of dying through contracting Monkeypox and COVID
+SELECT COVID.location, COVID.date, Monkeypox.total_cases, Monkeypox.total_deaths, (Monkeypox.total_deaths/Monkeypox.total_cases)*100 AS MonkeyPoxDeathPercentage, (COVID.total_deaths/COVID.total_cases)*100 AS COVIDDeathPercentage
+FROM COVID RIGHT JOIN Monkeypox ON COVID.locdate =[Monkeypox].[locdate]
+WHERE COVID.continent is not null
+ORDER BY 1, 2;
+
+QUERY 4
+-- Shows percentage of population infected with Monkeypox and COVID
+SELECT COVID.location, COVID.date, COVID.population, Monkeypox.total_cases, (Monkeypox.total_cases/COVID.population)*100 AS MonkeypoxPercentPopulationInfected, (COVID.total_cases/COVID.population)*100 AS COVIDPercentPopulationInfected
+FROM COVID RIGHT JOIN Monkeypox ON COVID.locdate =[Monkeypox].[locdate]
+WHERE COVID.location = 'United States'
+ORDER BY 1, 2;
+
+QUERY 5
+-- Countries with Highest Monkeypox Infection Rate with respect to population
+SELECT COVID.location, AVG(COVID.population) AS Population, MAX(Monkeypox.total_cases) AS MonkeypoxHighestInfection, (MonkeypoxHighestInfection/Population)*100 AS PercentPopulationInfected
+FROM COVID RIGHT JOIN Monkeypox ON COVID.locdate =[Monkeypox].[locdate]
+GROUP BY COVID.location, Population
+ORDER BY MAX(Monkeypox.total_cases) DESC;
+
+QUERY 6
+-- Countries with Highest Death Count per population
+SELECT COVID.location, MAX(CInt(Monkeypox.total_deaths)) AS TotalDeathCount
+FROM COVID RIGHT JOIN Monkeypox ON COVID.locdate =[Monkeypox].[locdate]
+WHERE COVID.continent IS NOT null
+GROUP BY COVID.location
+ORDER BY MAX(CInt(Monkeypox.total_deaths)) DESC;
+
+QUERY 7
+-- Continents with highest death counts
+SELECT COVID.continent, MAX(CInt(Monkeypox.total_deaths)) AS TotalDeathCount
+FROM COVID RIGHT JOIN Monkeypox ON COVID.locdate =[Monkeypox].[locdate]
+WHERE COVID.continent IS NOT null
+GROUP BY COVID.continent
+ORDER BY MAX(CInt(Monkeypox.total_deaths)) DESC;
+
+QUERY 8
+-- Global numbers
+SELECT SUM(Monkeypox.new_cases) AS Total_Cases, SUM(CInt(Monkeypox.new_deaths)) AS Total_Deaths, SUM(CInt(Monkeypox.new_deaths))/SUM(CInt(Monkeypox.new_cases))*100 AS DeathPercentage
+FROM COVID RIGHT JOIN Monkeypox ON COVID.locdate =[Monkeypox].[locdate]
+WHERE COVID.continent IS NOT null
+GROUP BY Monkeypox.date
+ORDER BY 1 DESC , 2;
+
+QUERY 9
+-- This is just an example of counts by continent and country. This is also done at the beginning to ensure data is there and to start basic analysis/understanding of dataset
+SELECT MAX(COVID.continent) AS continent, MAX(COVID.location) AS location, COUNT(COVID.date) AS dates, COUNT(COVID.population) AS population, COUNT(COVID.new_vaccinations) AS new_vaccinations
+FROM COVID
+WHERE COVID.continent IS NOT null
+GROUP BY location
+ORDER BY 1, 2;
+
+PARTITION EXAMPLE
+-- Although this doesn’t make much sense data-wise, I did make a partition example to accustom myself with the Partition-making process in Access. It’s different from what I’m used to.
+SELECT PARTITION(Monkeypox.total_cases,40,240,20) AS PartitionExample
+FROM Monkeypox
+GROUP BY Partition(Monkeypox.total_cases,40,240,20);

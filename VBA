@@ -1,0 +1,111 @@
+Option Explicit
+ 
+ 
+Sub SolverRun()
+ 
+Dim intElement As Integer, intReadValues(3) As Integer
+Dim intByCity(1) As Integer, intSolverResults(5)
+Dim lngRunCount As Long, lngRuns As Long
+Dim intRowOffset As Integer, intColOffset As Integer
+ 
+'Turn off automatic calculations and screen updating
+Application.Calculation = xlCalculationManual
+Application.ScreenUpdating = False
+ 
+'Activate starting cells on all worksheets
+ 
+ActiveWorkbook.Worksheets("ModelSheet").Activate
+Range("C4").Activate
+ 
+ActiveWorkbook.Worksheets("Demand").Activate
+Range("B2").Activate
+ 
+ActiveWorkbook.Worksheets("Shipments").Activate
+Range("B2").Activate
+ 
+'Outer loop to control number of runs, make an inputbox
+lngRuns = InputBox("How many iterations for this model run?")
+ 
+For lngRunCount = 1 To lngRuns
+ 
+'Write demand values and total to model Demand section
+ 
+Worksheets("ModelSheet").Activate 'to be sure at the top of the iterations For loop
+ 
+'Update to C21:C24 when writing values using VBA
+Worksheets("ModelSheet").Range("C4:C24").Calculate
+ 
+For intElement = LBound(intReadValues) To UBound(intReadValues)
+ 
+  ActiveCell.Offset(intElement, 0).Value = ActiveCell.Offset(intElement + 17, 0).Value
+  intReadValues(intElement) = ActiveCell.Offset(intElement, 0).Value
+ 
+Next 'intElement for demand in model
+ 
+ 
+'Write demand values to Demand table on Demand worksheet
+ 
+ActiveWorkbook.Worksheets("Demand").Activate
+ 
+For intElement = LBound(intReadValues) To UBound(intReadValues)
+ 
+  ActiveCell.Offset(0, intElement).Value = intReadValues(intElement)
+ 
+Next 'intElement
+ 
+ 
+'Add a new table row
+ActiveCell.Offset(1, 0).Activate
+ 
+ 
+'Run the Solver model
+ 
+ActiveWorkbook.Worksheets("ModelSheet").Activate
+ 
+SolverOk
+ 
+'SetCell:="$C$16", MaxMinVal:=2, ValueOf:=0, ByChange:="$H$11:$I$13", _
+    Engine:=2, EngineDesc:="Simplex LP"
+   
+SolverSolve UserFinish:=True
+ 
+'Read Solver solution into array
+ 
+Range("B29").Activate
+ 
+For intElement = LBound(intSolverResults) To UBound(intSolverResults)
+ 
+  intSolverResults(intElement) = ActiveCell.Offset(0, intElement).Value
+   
+Next 'intElement for reading Solver output
+ 
+'Reset active cell to C4 for next loop
+ 
+Range("C4").Activate
+ 
+ 
+'Write solution values to Shipments worksheet's Volume table
+ 
+Worksheets("Shipments").Activate
+ 
+For intElement = LBound(intSolverResults) To UBound(intSolverResults)
+ 
+  ActiveCell.Offset(0, intElement).Value = intSolverResults(intElement)
+ 
+Next 'intElement for writing Solver results
+ 
+'Write total miles
+ActiveCell.Offset(0, UBound(intSolverResults) + 5).Value = Worksheets("ModelSheet").Range("C16").Value
+ 
+'Move down one row in Volume table
+ 
+ActiveCell.Offset(1, 0).Activate
+ 
+Next 'lngRunCount
+ 
+'Turn on calculation and screen updates
+Application.Calculation = xlCalculationAutomatic
+Application.ScreenUpdating = True
+ 
+End Sub
+

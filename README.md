@@ -14,11 +14,13 @@ Steps 1-7 -- Data Cleaning
 7. Make the 'Age Bracket' column using nested IF statements.
 
 Step 8-10 -- Work with Data
+
 8. Insert Pivot Tables into pivot table sheet. 
 9. Changed income value (count) to average.
 10. Inserted charts based on relationships I wanted to show.
 
 Steps 11-13 -- Dashboard
+
 11. Copy tables into dashboard.
 12. Used the View tab to get rid of gridlines.
 13. Selected tables and used the PivotChart Analyze tab to make slicers. Ensured slicers applied to all tables.

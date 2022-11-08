@@ -1,0 +1,57 @@
+QUERY 1 (test data uploaded)
+SELECT *
+FROM NashvilleDataCleaning;
+
+QUERY 2 (standardize dates)
+UPDATE NashvilleDataCleaning SET SaleDate = CDate(SaleDate)
+WHERE SaleDate;
+
+QUERY 3 (test PropertyAddress has null values)
+SELECT *
+FROM NashvilleDataCleaning
+WHERE PropertyAddress is null
+ORDER BY ParcelID;
+
+QUERY 4 (create new table)
+CREATE TABLE new_table
+(ParcelID varchar(50),
+PropertyAddress varchar(255) NOT NULL
+)
+
+QUERY 5 (insert values into table)
+INSERT INTO new_table ( ParcelID, PropertyAddress )
+SELECT NashvilleDataCleaning.ParcelID, NashvilleDataCleaning.PropertyAddress
+FROM NashvilleDataCleaning
+WHERE (((NashvilleDataCleaning.PropertyAddress) Is Not Null));
+
+QUERY 6 (update original table with new values)
+UPDATE NashvilleDataCleaning INNER JOIN new_table ON NashvilleDataCleaning.ParcelID = new_table.ParcelID SET new_table.PropertyAddress = [NashvilleDataCleaning].[PropertyAddress];
+
+QUERY 7 (test some SoldAsVacant values are Y/N and some are Yes/No)
+SELECT DISTINCT (SoldAsVacant), COUNT(SoldAsVacant)
+FROM NashvilleDataCleaning
+GROUP BY SoldAsVacant
+ORDER BY 2;
+QUERY 8 (change Y values to Yes values)
+UPDATE NashvilleDataCleaning SET SoldAsVacant = 'Yes'
+WHERE SoldAsVacant = 'Y';
+
+QUERY 9 (change N values to No values)
+UPDATE NashvilleDataCleaning SET SoldAsVacant = 'No'
+WHERE SoldAsVacant = 'N';
+
+QUERY 10 (show duplicates)
+SELECT NashvilleDataCleaning.PropertyAddress, NashvilleDataCleaning.SaleDate, NashvilleDataCleaning.SalePrice, NashvilleDataCleaning.LegalReference, NashvilleDataCleaning.UniqueID, NashvilleDataCleaning.ParcelID, NashvilleDataCleaning.LandUse, NashvilleDataCleaning.SoldAsVacant, NashvilleDataCleaning.OwnerName, NashvilleDataCleaning.OwnerAddress, NashvilleDataCleaning.Acreage, NashvilleDataCleaning.LandValue, NashvilleDataCleaning.BuildingValue, NashvilleDataCleaning.TotalValue, NashvilleDataCleaning.YearBuilt, NashvilleDataCleaning.Bedrooms, NashvilleDataCleaning.FullBath, NashvilleDataCleaning.HalfBath
+FROM NashvilleDataCleaning
+WHERE (((NashvilleDataCleaning.PropertyAddress) In (SELECT [PropertyAddress] FROM [NashvilleDataCleaning] As Tmp GROUP BY [PropertyAddress],[SaleDate],[SalePrice],[LegalReference] HAVING Count(*)>1  And [SaleDate] = [NashvilleDataCleaning].[SaleDate] And [SalePrice] = [NashvilleDataCleaning].[SalePrice] And [LegalReference] = [NashvilleDataCleaning].[LegalReference])))
+ORDER BY NashvilleDataCleaning.PropertyAddress, NashvilleDataCleaning.SaleDate, NashvilleDataCleaning.SalePrice, NashvilleDataCleaning.LegalReference;
+
+QUERY 11 (append non-duplicates to new table)
+INSERT INTO [NashvilleDataCleaning v2]
+SELECT NashvilleDataCleaning.*
+FROM NashvilleDataCleaning;
+
+
+QUERY 12 (delete unused columns)
+ALTER TABLE NashvilleDataCleaning
+DROP COLUMN TaxDistrict

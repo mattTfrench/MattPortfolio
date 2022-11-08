@@ -6,13 +6,21 @@ Unfortunately, my project in Microsoft Access was too big to upload here. Instea
 The following 12 SQL queries were used for data cleaning an Excel document uploaded to Microsoft Access. The queries were organized as follows: 
 
 •	Query 1 tests that all data was successfully uploaded.
+
 •	Query 2 standardizes the date format.
+
 •	Queries 3-6 correct missing PropertyAddress values for multiple rows.
+
     o	Through a quick test (query 3), you can see that each Parcel ID value corresponds to an address. Therefore, the missing property addresses can be found by finding the corresponding Parcel IDs and matching them to a missing property address.
+    
     o	Query 3 tests that the values are null.
+    
     o	Query 4 creates a new table new_table.
+    
     o	Query 5 inserts values from the raw data to the new_table.
+    
     o	Query 6 updates the original table with the necessary PropertyAddress values.
+    
 •	Queries 7-9 change Y/N values to Yes/No to help with comprehension.
 •	Queries 10 and 11 remove duplicates.
     o	Query 10 shows duplicates.

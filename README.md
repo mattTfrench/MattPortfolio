@@ -11,4 +11,6 @@ Project 4 is an Excel dashboard made for a bicycle company.
 
 Project 5 uses Python to analyze a dataset from Kaggle.com about movies.
 
+Project 6 uses some Excel data exploration for readability and adds a dashboard for quick insights.
+
 More projects are in-progress.

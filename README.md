@@ -1,7 +1,7 @@
 # MattPortfolio
 Project 6 uses some Excel data exploration for readability and adds a dashboard for quick insights.
 
-The data here is from United Airlines in December 2015 from http://www.transtats.bts.gov/. I accessed this data in my Coursera Advanced Business Analytics Specialization Certificate course from the University of Boulder Colorado.
+The data here is from United Airlines in December 2015 from http://www.transtats.bts.gov/. I accessed this data in my Coursera Advanced Business Analytics Specialization Certificate course from the University of Colorado Boulder.
 
 The first Excel was meant as an exercise for quick data cleaning and exploration. 
     I used Columns E and F to create new, more readable columns. Columns E and F are in minutes after 12:00AM, so I used nested IF statements to change the data to a more readable time (Columns L and M). 

@@ -9,4 +9,6 @@ Project 3 is an example of data cleaning using SQL for real estate in Nashville.
 
 Project 4 is an Excel dashboard made for a bicycle company.
 
+Project 5 uses Python to analyze a dataset from Kaggle.com about movies.
+
 More projects are in-progress.
